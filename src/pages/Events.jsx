@@ -1,5 +1,5 @@
 import React from "react";
-import eventsData from "../data/events"; // Make sure events.js has your events array
+import eventsData from "../data/events";
 
 function EventCard({ event }) {
   return (

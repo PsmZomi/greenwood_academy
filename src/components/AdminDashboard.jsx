@@ -1,124 +1,117 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  setDoc,
-  addDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { collection, doc, getDocs, setDoc, addDoc, deleteDoc } from "firebase/firestore";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
 
 // Cloudinary env
 const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-// Check if Cloudinary is configured
 const isCloudinaryConfigured = CLOUDINARY_URL && CLOUDINARY_UPLOAD_PRESET;
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("news");
 
-  // -------- News States --------
+  // --- News states ---
   const [newsList, setNewsList] = useState([]);
   const [newNewsTitle, setNewNewsTitle] = useState("");
   const [newNewsExcerpt, setNewNewsExcerpt] = useState("");
   const [newNewsFile, setNewNewsFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingNews, setLoadingNews] = useState(false);
+  const [loadingUpload, setLoadingUpload] = useState(false);
 
-  // -------- Gallery States --------
+  // --- Gallery states ---
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [mediaList, setMediaList] = useState([]);
   const [newAlbumName, setNewAlbumName] = useState("");
   const [showAlbumForm, setShowAlbumForm] = useState(false);
 
-  // -------------------- Fetch --------------------
+  // --- Fetch functions ---
   const fetchNews = async () => {
-    const snapshot = await getDocs(collection(db, "notifications"));
-    setNewsList(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    setLoadingNews(true);
+    try {
+      const snapshot = await getDocs(collection(db, "notifications"));
+      setNewsList(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    } catch (err) {
+      console.error("Failed to fetch news:", err);
+    } finally {
+      setLoadingNews(false);
+    }
   };
 
   const fetchEvents = async () => {
-    const snapshot = await getDocs(collection(db, "galleryItems"));
-    const eventsData = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-    setEvents(eventsData);
-    // Auto-select first event if none selected
-    if (!selectedEvent && eventsData.length > 0) {
-      setSelectedEvent(eventsData[0].id);
+    try {
+      const snapshot = await getDocs(collection(db, "galleryItems"));
+      const eventsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      setEvents(eventsData);
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
     }
   };
 
   const fetchMedia = async (eventId) => {
     if (!eventId) return;
-    const snapshot = await getDocs(
-      collection(db, "galleryItems", eventId, "media")
-    );
-    setMediaList(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    try {
+      const snapshot = await getDocs(collection(db, "galleryItems", eventId, "media"));
+      setMediaList(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    } catch (err) {
+      console.error("Failed to fetch media:", err);
+    }
   };
 
+ useEffect(() => {
+  if (events.length > 0 && !selectedEvent) {
+    setSelectedEvent(events[0].id);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [events]);
+
+
+  // --- Fetch data on mount ---
   useEffect(() => {
     fetchNews();
     fetchEvents();
-  },);
+  }, []);
 
   useEffect(() => {
     if (selectedEvent) fetchMedia(selectedEvent);
   }, [selectedEvent]);
 
-  // -------------------- Upload Helper --------------------
+  // --- Upload to Cloudinary ---
   const uploadToCloudinary = async (file) => {
-    if (!isCloudinaryConfigured) {
-      throw new Error("Cloudinary is not configured. Please check your environment variables.");
-    }
-
+    if (!isCloudinaryConfigured) throw new Error("Cloudinary not configured");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-    
-    try {
-      console.log("Uploading to Cloudinary...", CLOUDINARY_URL);
-      const response = await axios.post(CLOUDINARY_URL, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        timeout: 30000,
-      });
-      
-      console.log("Upload successful:", response.data);
-      return {
-        url: response.data.secure_url,
-        type: file.type.startsWith("video") ? "video" : "image"
-      };
-    } catch (error) {
-      console.error("Cloudinary upload error:", error);
-      if (error.response) {
-        console.error("Response data:", error.response.data);
-        console.error("Response status:", error.response.status);
-      }
-      throw new Error(`Upload failed: ${error.response?.data?.error?.message || error.message}`);
-    }
+
+    const response = await axios.post(CLOUDINARY_URL, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 30000,
+    });
+
+    return {
+      url: response.data.secure_url,
+      type: file.type.startsWith("video") ? "video" : "image"
+    };
   };
 
-  // -------------------- News Actions --------------------
+  // --- News actions ---
   const addNews = async () => {
     if (!newNewsTitle || !newNewsExcerpt) {
-      alert("Title and excerpt required");
+      alert("Title and excerpt are required");
       return;
     }
 
     let url = "";
-    let type = "text"; // Default to text if no file
+    let type = "text";
 
     if (newNewsFile) {
       if (!isCloudinaryConfigured) {
-        alert("Cloudinary is not configured. File uploads are disabled.");
+        alert("File uploads disabled: Cloudinary not configured");
         return;
       }
-
-      setLoading(true);
+      setLoadingUpload(true);
       try {
         const uploadResult = await uploadToCloudinary(newNewsFile);
         url = uploadResult.url;
@@ -126,10 +119,10 @@ export default function AdminDashboard() {
       } catch (err) {
         console.error(err);
         alert(`Upload failed: ${err.message}`);
-        setLoading(false);
+        setLoadingUpload(false);
         return;
       }
-      setLoading(false);
+      setLoadingUpload(false);
     }
 
     try {
@@ -140,15 +133,14 @@ export default function AdminDashboard() {
         type,
         date: new Date().toISOString(),
       });
-
       setNewNewsTitle("");
       setNewNewsExcerpt("");
       setNewNewsFile(null);
       fetchNews();
       alert("News added successfully!");
-    } catch (error) {
-      console.error("Error adding news:", error);
-      alert("Failed to add news to database");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add news");
     }
   };
 
@@ -156,17 +148,12 @@ export default function AdminDashboard() {
     const newTitle = prompt("Edit title:", news.title);
     const newExcerpt = prompt("Edit excerpt:", news.excerpt);
     if (!newTitle || !newExcerpt) return;
-
     try {
-      await setDoc(
-        doc(db, "notifications", news.id),
-        { ...news, title: newTitle, excerpt: newExcerpt },
-        { merge: true }
-      );
+      await setDoc(doc(db, "notifications", news.id), { ...news, title: newTitle, excerpt: newExcerpt }, { merge: true });
       fetchNews();
       alert("News updated successfully!");
-    } catch (error) {
-      console.error("Error updating news:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to update news");
     }
   };
@@ -177,19 +164,18 @@ export default function AdminDashboard() {
       await deleteDoc(doc(db, "notifications", newsId));
       fetchNews();
       alert("News deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting news:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to delete news");
     }
   };
 
-  // -------------------- Album Management --------------------
+  // --- Gallery actions ---
   const addAlbum = async () => {
     if (!newAlbumName.trim()) {
       alert("Album name is required");
       return;
     }
-
     try {
       await addDoc(collection(db, "galleryItems"), {
         label: newAlbumName.trim(),
@@ -199,8 +185,8 @@ export default function AdminDashboard() {
       setShowAlbumForm(false);
       fetchEvents();
       alert("Album created successfully!");
-    } catch (error) {
-      console.error("Error adding album:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to create album");
     }
   };
@@ -208,100 +194,67 @@ export default function AdminDashboard() {
   const editAlbum = async (album) => {
     const newName = prompt("Enter new album name:", album.label);
     if (!newName || !newName.trim()) return;
-
     try {
-      await setDoc(
-        doc(db, "galleryItems", album.id),
-        { ...album, label: newName.trim() },
-        { merge: true }
-      );
+      await setDoc(doc(db, "galleryItems", album.id), { ...album, label: newName.trim() }, { merge: true });
       fetchEvents();
       alert("Album updated successfully!");
-    } catch (error) {
-      console.error("Error updating album:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to update album");
     }
   };
 
   const deleteAlbum = async (albumId) => {
-    if (!window.confirm("Are you sure you want to delete this album? This will also delete all media inside it.")) return;
-
+    if (!window.confirm("Delete this album and all its media?")) return;
     try {
-      // First delete all media in the album
-      const mediaSnapshot = await getDocs(
-        collection(db, "galleryItems", albumId, "media")
-      );
-      
-      // Delete each media item
-      const deletePromises = mediaSnapshot.docs.map((mediaDoc) =>
-        deleteDoc(doc(db, "galleryItems", albumId, "media", mediaDoc.id))
-      );
-      
+      // Delete all media
+      const mediaSnapshot = await getDocs(collection(db, "galleryItems", albumId, "media"));
+      const deletePromises = mediaSnapshot.docs.map(m => deleteDoc(doc(db, "galleryItems", albumId, "media", m.id)));
       await Promise.all(deletePromises);
-      
-      // Then delete the album itself
+      // Delete album
       await deleteDoc(doc(db, "galleryItems", albumId));
-      
-      // Update UI
-      if (selectedEvent === albumId) {
-        setSelectedEvent(null);
-      }
+      if (selectedEvent === albumId) setSelectedEvent(null);
       fetchEvents();
       alert("Album deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting album:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to delete album");
     }
   };
 
-  // -------------------- Gallery Actions --------------------
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: async (files) => {
       if (!selectedEvent) {
         alert("Please select an album first");
         return;
       }
-
       if (!isCloudinaryConfigured) {
-        alert("Cloudinary is not configured. File uploads are disabled.");
+        alert("File uploads disabled: Cloudinary not configured");
         return;
       }
-
-      setLoading(true);
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const file of files) {
-        try {
+      setLoadingUpload(true);
+      try {
+        const uploadPromises = files.map(async file => {
           const uploadResult = await uploadToCloudinary(file);
-          await addDoc(collection(db, "galleryItems", selectedEvent, "media"), {
+          return addDoc(collection(db, "galleryItems", selectedEvent, "media"), {
             url: uploadResult.url,
             type: uploadResult.type,
             fileName: file.name,
             size: file.size,
             uploadedAt: new Date(),
           });
-          successCount++;
-        } catch (err) {
-          console.error(`Upload failed for ${file.name}:`, err);
-          errorCount++;
-        }
-      }
-
-      fetchMedia(selectedEvent);
-      setLoading(false);
-
-      if (successCount > 0) {
-        alert(`Successfully uploaded ${successCount} file(s)`);
-      }
-      if (errorCount > 0) {
-        alert(`Failed to upload ${errorCount} file(s). Check console for details.`);
+        });
+        await Promise.all(uploadPromises);
+        fetchMedia(selectedEvent);
+        alert(`Uploaded ${files.length} file(s) successfully`);
+      } catch (err) {
+        console.error(err);
+        alert("Some files failed to upload");
+      } finally {
+        setLoadingUpload(false);
       }
     },
-    accept: {
-      "image/*": [".jpeg", ".jpg", ".png", ".gif", ".webp"],
-      "video/*": [".mp4", ".mov", ".avi", ".webm"],
-    },
+    accept: { "image/*": [], "video/*": [] },
   });
 
   const deleteMedia = async (mediaId) => {
@@ -310,8 +263,8 @@ export default function AdminDashboard() {
       await deleteDoc(doc(db, "galleryItems", selectedEvent, "media", mediaId));
       fetchMedia(selectedEvent);
       alert("Media deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting media:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to delete media");
     }
   };
@@ -320,15 +273,11 @@ export default function AdminDashboard() {
     const newUrl = prompt("Enter new media URL:", media.url);
     if (!newUrl) return;
     try {
-      await setDoc(
-        doc(db, "galleryItems", selectedEvent, "media", media.id),
-        { ...media, url: newUrl },
-        { merge: true }
-      );
+      await setDoc(doc(db, "galleryItems", selectedEvent, "media", media.id), { ...media, url: newUrl }, { merge: true });
       fetchMedia(selectedEvent);
       alert("Media updated successfully!");
-    } catch (error) {
-      console.error("Error updating media:", error);
+    } catch (err) {
+      console.error(err);
       alert("Failed to update media");
     }
   };
@@ -338,14 +287,9 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
 
-        {/* Cloudinary Status */}
         {!isCloudinaryConfigured && (
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-            <strong>Cloudinary Not Configured:</strong> File uploads will not work until Cloudinary environment variables are set.
-            <br />
-            <span className="text-sm">
-              Required: VITE_CLOUDINARY_URL and VITE_CLOUDINARY_UPLOAD_PRESET
-            </span>
+            Cloudinary not configured: File uploads disabled
           </div>
         )}
 
@@ -353,9 +297,7 @@ export default function AdminDashboard() {
         <div className="mb-6 border-b border-gray-200 flex space-x-4">
           <button
             className={`py-2 px-3 border-b-2 font-medium ${
-              activeTab === "news"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+              activeTab === "news" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
             onClick={() => setActiveTab("news")}
           >
@@ -363,9 +305,7 @@ export default function AdminDashboard() {
           </button>
           <button
             className={`py-2 px-3 border-b-2 font-medium ${
-              activeTab === "gallery"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
+              activeTab === "gallery" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
             onClick={() => setActiveTab("gallery")}
           >
@@ -373,341 +313,123 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* ------------------- News Tab ------------------- */}
+        {/* News Tab */}
         {activeTab === "news" && (
-  <div className="space-y-6 bg-white p-6 rounded-lg shadow border border-gray-200">
-    <h2 className="font-semibold text-xl mb-4">Manage News</h2>
-    
-    <input
-      type="text"
-      placeholder="Title"
-      value={newNewsTitle}
-      onChange={(e) => setNewNewsTitle(e.target.value)}
-      className="w-full mb-2 border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"
-    />
-    <textarea
-      placeholder="Excerpt"
-      value={newNewsExcerpt}
-      onChange={(e) => setNewNewsExcerpt(e.target.value)}
-      className="w-full mb-2 border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500"
-      rows="3"
-    />
-    <div className="mb-2">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Media File (Optional) {!isCloudinaryConfigured && "(Uploads disabled)"}
-      </label>
-      <input 
-        type="file" 
-        onChange={(e) => setNewNewsFile(e.target.files[0])} 
-        className="w-full"
-        accept="image/*,video/*"
-        disabled={!isCloudinaryConfigured}
-      />
-      {newNewsFile && (
-        <p className="text-sm text-green-600 mt-1">
-          Selected: {newNewsFile.name}
-        </p>
-      )}
-      {!isCloudinaryConfigured && (
-        <p className="text-sm text-yellow-600 mt-1">
-          File uploads disabled - Cloudinary not configured
-        </p>
-      )}
-    </div>
-    <button
-      onClick={addNews}
-      disabled={loading}
-      className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:bg-blue-400 disabled:cursor-not-allowed"
-    >
-      {loading ? "Uploading..." : "Add News"}
-    </button>
+          <div className="space-y-6 bg-white p-6 rounded-lg shadow border border-gray-200">
+            <h2 className="font-semibold text-xl mb-4">Manage News</h2>
+            <input type="text" placeholder="Title" value={newNewsTitle} onChange={e => setNewNewsTitle(e.target.value)} className="w-full mb-2 border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500" />
+            <textarea placeholder="Excerpt" value={newNewsExcerpt} onChange={e => setNewNewsExcerpt(e.target.value)} className="w-full mb-2 border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500" rows="3" />
+            <input type="file" onChange={e => setNewNewsFile(e.target.files[0])} accept="image/*,video/*" className="w-full mb-2" disabled={!isCloudinaryConfigured} />
+            <button onClick={addNews} disabled={loadingUpload} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:bg-blue-400">
+              {loadingUpload ? "Uploading..." : "Add News"}
+            </button>
 
-    <div className="mt-6">
-      <h3 className="font-semibold text-lg mb-3">Existing News</h3>
-      {newsList.length === 0 ? (
-        <p className="text-gray-500 text-center py-4">No news items yet.</p>
-      ) : (
-        <div className="space-y-4">
-          {newsList.map((n) => (
-            <div
-              key={n.id}
-              className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Media Preview */}
-                {n.url && (
-                  <div className="md:w-48 flex-shrink-0">
-                    {n.type === "video" ? (
-                      <div className="relative">
-                        <video
-                          src={n.url}
-                          controls
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                          VIDEO
-                        </div>
-                      </div>
-                    ) : n.type === "image" ? (
-                      <div className="relative">
-                        <img
-                          src={n.url}
-                          alt={n.title}
-                          className="w-full h-32 object-cover rounded-lg"
-                          onError={(e) => {
-                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='12' fill='%239ca3af'%3EImage%3C/text%3E%3C/svg%3E";
-                          }}
-                        />
-                        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                          IMAGE
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-500 text-sm">No media</span>
+            {loadingNews ? (
+              <p className="text-gray-500 text-center py-4">Loading news...</p>
+            ) : newsList.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">No news items yet.</p>
+            ) : (
+              <div className="space-y-4 mt-6">
+                {newsList.map(n => (
+                  <div key={n.id} className="border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row gap-4 hover:shadow-md transition-shadow">
+                    {n.url && (
+                      <div className="md:w-48 flex-shrink-0">
+                        {n.type === "video" ? (
+                          <video src={n.url} controls className="w-full h-32 object-cover rounded-lg" onError={e => e.target.src = ""} />
+                        ) : (
+                          <img src={n.url} alt={n.title} className="w-full h-32 object-cover rounded-lg" onError={e => e.target.src = ""} />
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
-                
-                {/* Content */}
-                <div className="flex-1">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h4 className="font-semibold text-lg text-gray-800">{n.title}</h4>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {new Date(n.date).toLocaleDateString()} • {n.type?.toUpperCase() || 'TEXT'}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => editNews(n)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-                        title="Edit news"
-                      >
-                        ✎ Edit
-                      </button>
-                      <button
-                        onClick={() => deleteNews(n.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                        title="Delete news"
-                      >
-                        🗑️ Delete
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-600 leading-relaxed">{n.excerpt}</p>
-                  
-                  {/* Debug Info - Remove in production */}
-                  {n.url && (
-                    <div className="mt-2">
-                      <p className="text-xs text-gray-400 break-all">
-                        URL: {n.url}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        Type: {n.type} | Has URL: {n.url ? 'Yes' : 'No'}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  </div>
-)}
-        {/* ------------------- Gallery Tab ------------------- */}
-        {activeTab === "gallery" && (
-          <div className="space-y-6">
-            {/* Album Management Section */}
-            <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-semibold text-xl">Manage Albums</h2>
-                <button
-                  onClick={() => setShowAlbumForm(!showAlbumForm)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                >
-                  {showAlbumForm ? "Cancel" : "+ New Album"}
-                </button>
-              </div>
-
-              {/* New Album Form */}
-              {showAlbumForm && (
-                <div className="mb-6 p-4 border rounded-lg bg-gray-50">
-                  <input
-                    type="text"
-                    placeholder="Enter album name"
-                    value={newAlbumName}
-                    onChange={(e) => setNewAlbumName(e.target.value)}
-                    className="w-full mb-3 border px-3 py-2 rounded focus:ring-2 focus:ring-green-500"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={addAlbum}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                    >
-                      Create Album
-                    </button>
-                    <button
-                      onClick={() => setShowAlbumForm(false)}
-                      className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Albums List */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {events.map((album) => (
-                  <div
-                    key={album.id}
-                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                      selectedEvent === album.id
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                    onClick={() => setSelectedEvent(album.id)}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-lg">{album.label}</h3>
-                      <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => editAlbum(album)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded text-sm"
-                        >
-                          ✎
-                        </button>
-                        <button
-                          onClick={() => deleteAlbum(album.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded text-sm"
-                        >
-                          🗑️
-                        </button>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="font-semibold text-lg">{n.title}</h4>
+                          <p className="text-sm text-gray-500 mt-1">{new Date(n.date).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button onClick={() => editNews(n)} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">✎ Edit</button>
+                          <button onClick={() => deleteNews(n.id)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">🗑️ Delete</button>
+                        </div>
                       </div>
+                      <p className="text-gray-600 leading-relaxed">{n.excerpt}</p>
                     </div>
-                    <p className="text-sm text-gray-500">
-                      Created: {new Date(album.createdAt).toLocaleDateString()}
-                    </p>
-                    {selectedEvent === album.id && (
-                      <div className="mt-2 text-sm text-blue-600 font-medium">
-                        ✓ Selected
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        )}
 
-              {events.length === 0 && (
-                <p className="text-gray-500 text-center py-4">
-                  No albums created yet. Create your first album to get started.
-                </p>
+        {/* Gallery Tab */}
+        {activeTab === "gallery" && (
+          <div className="space-y-6">
+            {/* Album Management */}
+            <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="font-semibold text-xl">Albums</h2>
+                <button onClick={() => setShowAlbumForm(!showAlbumForm)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                  {showAlbumForm ? "Cancel" : "Add Album"}
+                </button>
+              </div>
+
+              {showAlbumForm && (
+                <div className="flex gap-2 mb-4">
+                  <input type="text" placeholder="Album name" value={newAlbumName} onChange={e => setNewAlbumName(e.target.value)} className="flex-1 border px-3 py-2 rounded focus:ring-2 focus:ring-blue-500" />
+                  <button onClick={addAlbum} className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded">Create</button>
+                </div>
+              )}
+
+              {events.length === 0 ? (
+                <p className="text-gray-500">No albums yet.</p>
+              ) : (
+                <div className="flex flex-wrap gap-3">
+                  {events.map(album => (
+                    <div
+                      key={album.id}
+                      className={`border px-3 py-2 rounded cursor-pointer hover:shadow-md transition-shadow ${selectedEvent === album.id ? "bg-blue-100 border-blue-500" : "bg-gray-50"}`}
+                      onClick={() => setSelectedEvent(album.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span>{album.label}</span>
+                        <button onClick={(e) => { e.stopPropagation(); editAlbum(album); }} className="text-blue-600 hover:text-blue-800">✎</button>
+                        <button onClick={(e) => { e.stopPropagation(); deleteAlbum(album.id); }} className="text-red-600 hover:text-red-800">🗑️</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 
-            {/* Media Management Section */}
+            {/* Media Management */}
             {selectedEvent && (
               <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
-                <h2 className="font-semibold text-xl mb-4">
-                  Media in "{events.find((e) => e.id === selectedEvent)?.label}"
-                </h2>
+                <h2 className="font-semibold text-xl mb-4">Media in "{events.find(e => e.id === selectedEvent)?.label}"</h2>
 
-                {/* Upload Zone */}
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                    isCloudinaryConfigured 
-                      ? "border-gray-300 hover:bg-gray-50" 
-                      : "border-red-300 bg-red-50 cursor-not-allowed"
-                  }`}
-                >
+                <div {...getRootProps()} className="border-dashed border-2 border-gray-400 p-6 text-center rounded cursor-pointer hover:bg-gray-50">
                   <input {...getInputProps()} />
-                  {isCloudinaryConfigured ? (
-                    <>
-                      <p className="text-gray-600">
-                        Drag & drop files here, or click to select files
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Supports images (JPEG, PNG, GIF, WebP) and videos (MP4, MOV, AVI, WebM)
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-red-600">
-                      File uploads disabled - Cloudinary not configured
-                    </p>
-                  )}
+                  {loadingUpload ? "Uploading..." : "Drag & drop images/videos here, or click to select files"}
                 </div>
-                {loading && (
-                  <p className="mt-3 text-blue-600 font-medium">Uploading files...</p>
-                )}
 
-                {/* Media Grid */}
-                {mediaList.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
-                    {mediaList.map((m) => (
-                      <div
-                        key={m.id}
-                        className="relative group border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                      >
-                        {m.type === "video" ? (
-                          <video
-                            src={m.url}
-                            controls
-                            className="w-full aspect-video object-cover"
-                          />
+                {mediaList.length === 0 ? (
+                  <p className="text-gray-500 mt-4">No media yet.</p>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                    {mediaList.map(media => (
+                      <div key={media.id} className="relative border rounded overflow-hidden hover:shadow-md">
+                        {media.type === "video" ? (
+                          <video src={media.url} controls className="w-full h-32 object-cover" onError={e => e.target.src = ""} />
                         ) : (
-                          <img
-                            src={m.url}
-                            alt=""
-                            className="w-full aspect-square object-cover"
-                          />
+                          <img src={media.url} alt={media.fileName} className="w-full h-32 object-cover" onError={e => e.target.src = ""} />
                         )}
-
-                        {/* Action Buttons */}
-                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => editMedia(m)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-full shadow-lg"
-                            title="Edit media"
-                          >
-                            ✎
-                          </button>
-                          <button
-                            onClick={() => deleteMedia(m.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full shadow-lg"
-                            title="Delete media"
-                          >
-                            ✕
-                          </button>
-                        </div>
-
-                        {/* File Info */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="truncate">{m.fileName}</div>
-                          <div>
-                            {m.type} • {Math.round(m.size / 1024)}KB
-                          </div>
+                        <div className="absolute top-1 right-1 flex gap-1">
+                          <button onClick={() => editMedia(media)} className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 text-xs rounded">✎</button>
+                          <button onClick={() => deleteMedia(media.id)} className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-xs rounded">🗑️</button>
                         </div>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-gray-500 text-center py-8">
-                    No media in this album yet. {isCloudinaryConfigured ? "Upload some files to get started." : "Configure Cloudinary to enable uploads."}
-                  </p>
                 )}
-              </div>
-            )}
-
-            {!selectedEvent && events.length > 0 && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                <p className="text-yellow-700">
-                  Please select an album to manage its media content.
-                </p>
               </div>
             )}
           </div>

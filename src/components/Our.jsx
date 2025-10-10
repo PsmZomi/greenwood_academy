@@ -71,7 +71,7 @@ export default function StudentGroups() {
   return (
     <div className="relative">
       {/* Heading */}
-      <div className="max-w-5xl mx-auto pt-16 pb-4 px-4 z-10">
+      <div className="max-w-6xl mx-auto pt-16 pb-4 px-4 z-10">
         <h2 className="text-5xl font-extrabold outlined-text-green-600 inline-block mr-2 text-left">
           OUR
         </h2>
@@ -86,7 +86,7 @@ export default function StudentGroups() {
 
       {/* Cards */}
       <div className="py-10 relative z-10">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 px-2">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 px-2">
           {groups.map((group, index) => (
             <div
               key={group.label}

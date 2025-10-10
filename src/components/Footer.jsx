@@ -117,7 +117,7 @@ export default function Footer() {
         {/* Bottom Copyright */}
         <div className="border-t border-green-800 text-center text-xs text-gray-200 py-4 relative">
           <div className="max-w-7xl mx-auto px-6">
-            © {new Date().getFullYear()} Greenwood Academy | Powered by Greenwood Academy
+            © {new Date().getFullYear()} Greenwood Academy
           </div>
         </div>
       </div>
