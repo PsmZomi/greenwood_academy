@@ -8,10 +8,10 @@ export default function PrincipalMessage() {
   const [statsInView, setStatsInView] = useState(false);
 
   const stats = [
-    { label: "Teachers", value: 36, icon: <UserRound className="w-7 h-7" /> },
-    { label: "Students", value: 1000, suffix: "+", icon: <Users className="w-7 h-7" /> },
-    { label: "Graduates", value: 500, suffix: "+", icon: <GraduationCap className="w-7 h-7" /> },
-    { label: "Awards", value: 10, suffix: "+", icon: <Trophy className="w-7 h-7" /> },
+    { label: "Teachers", value: 40, suffix: "+", icon: <UserRound className="w-7 h-7" /> },
+    { label: "Students", value: 1200, suffix: "+", icon: <Users className="w-7 h-7" /> },
+    { label: "Graduates", value: 1000, suffix: "+", icon: <GraduationCap className="w-7 h-7" /> },
+    { label: "Awards", value: 15, suffix: "+", icon: <Trophy className="w-7 h-7" /> },
   ];
 
   useEffect(() => {
@@ -120,7 +120,7 @@ export default function PrincipalMessage() {
                   <p className="italic font-semibold text-gray-800 text-base md:text-lg">
                     With gratitude and hope,
                     <br />
-                    <span className="text-green-700">Mr. Richard L Haokip</span>
+                    <span className="text-green-800">Mr. Richard L Haokip</span>
                   </p>
                 </div>
               </div>
@@ -149,7 +149,7 @@ export default function PrincipalMessage() {
               key={stat.label}
               className="group text-center bg-white rounded-xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100"
             >
-              <div className="flex justify-center mb-4 text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-transform duration-300">
+              <div className="flex justify-center mb-4 text-green-800 group-hover:text-green-700 group-hover:scale-110 transition-transform duration-300">
                 {stat.icon}
               </div>
               <Counter value={stat.value} trigger={statsInView} suffix={stat.suffix} />

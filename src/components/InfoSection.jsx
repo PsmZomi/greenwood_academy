@@ -24,7 +24,7 @@ export default function NewsInsightsPage() {
   const openNotification = (id) => navigate(`/news/${id}`);
 
   return (
-    <section className="p-4 md:p-8 bg-gray-50 min-h-screen">
+    <section className="p-4 md:p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex flex-col items-start mb-10">
@@ -38,7 +38,7 @@ export default function NewsInsightsPage() {
 
         {/* Empty state */}
         {newsItems.length === 0 && (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-10 text-gray-500">
             <h3 className="text-lg font-medium mb-2">No News Yet</h3>
             <p>Check back later for updates</p>
           </div>

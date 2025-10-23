@@ -11,7 +11,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="text-white mt-20 relative">
+    <footer className="text-white relative">
       {/* Background Image with Overlay */}
       <div
         className="absolute inset-0 z-0"

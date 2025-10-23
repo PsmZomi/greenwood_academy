@@ -11,7 +11,7 @@ import Our from "./components/Our";
 import About from "./pages/About";
 import Curriculum from "./pages/Curriculum";
 import Subjects from "./pages/Subjects";
-import Facilities from "./pages/Facilities";
+import Exam from "./pages/Exam";
 import Rules from "./pages/Rules";
 import Admission from "./pages/Admission";
 import Contact from "./pages/Contact";
@@ -19,11 +19,11 @@ import InfoSection from "./components/InfoSection";
 import NotificationDetail from "./pages/NotificationDetail";
 import Events from "./pages/Events";
 import Alumni from "./pages/Alumni";
-import Achievements from "./pages/Achievements";
+import Activities from "./pages/Activities";
 import Calendar from "./pages/Calendar";
 import Students from "./components/Students";
 import MeetOurTeam from "./pages/MeetOurTeam";
-import Governance from "./pages/Governance";
+import StudentsCouncil from "./pages/StudentsCouncil";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
@@ -31,6 +31,7 @@ import { ProfileProvider } from "./pages/ProfileContext";
 import AdminGalleryUpload from "./pages/AdminGalleryUpload";
 import AdminDashboard from "./components/AdminDashboard";
 import NewsDetail from "./pages/NewsDetail";
+import Certificate from "./pages/Certificate";
 
 export default function App() {
   return (
@@ -70,16 +71,17 @@ export default function App() {
             {/* About & Academics */}
             <Route path="/about" element={<About />} />
             <Route path="/academics/curriculum" element={<Curriculum />} />
-            <Route path="/academics/achievements" element={<Achievements />} />
-            <Route path="/academics/facilities" element={<Facilities />} />
+            <Route path="/academics/activities" element={<Activities />} />
+            <Route path="/academics/exam" element={<Exam />} />
             <Route path="/academics/rules" element={<Rules />} />
             <Route path="/academics/calendar" element={<Calendar />} />
+            <Route path="/academics/certificate" element={<Certificate />} />
 
             {/* Community */}
             <Route path="/community/team" element={<MeetOurTeam />} />
             <Route path="/community/events" element={<Events />} />
             <Route path="/community/alumni" element={<Alumni />} />
-            <Route path="/community/governance" element={<Governance />} />
+            <Route path="/community/students-council" element={<StudentsCouncil />} />
 
             {/* Gallery */}
             <Route path="/gallery" element={<GalleryPage />} />
@@ -91,7 +93,7 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
 
             {/* Other pages */}
-            <Route path="/achievements" element={<Achievements />} />
+            
             <Route path="/students" element={<Students />} />
             <Route path="/admin/upload" element={<AdminGalleryUpload />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

@@ -12,46 +12,46 @@ const classData = [
   {
     label: "Pre-Primary Class",
     stats: [
-      { value: "15:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
-      { value: "3-8", label: "Age Range", icon: <FaChild /> },
+      { value: "45:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
+      { value: "Pre-UKG", label: "Class", icon: <FaChild /> },
       { value: "100%", label: "Pass Percentage", icon: <FaGraduationCap /> },
     ],
     img: "https://i.ytimg.com/vi/83Xv1J1THpU/oar2.jpg?sqp=-oaymwEYCJUDENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLCexRAc7iC7lEZewPJ9ZgNZ54Xjgw",
     description:
-      "Our Pre-Primary program focuses on play-based learning and social development in a nurturing environment.",
+      "A joyful introduction to learning through play, storytelling, art and exploration that helps children develop confidence and curiosity.",
   },
   {
     label: "Primary School",
     stats: [
-      { value: "20:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
-      { value: "8-11", label: "Age Range", icon: <FaChild /> },
+      { value: "45:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
+      { value: "I - V", label: "Class", icon: <FaChild /> },
       { value: "100%", label: "Pass Percentage", icon: <FaGraduationCap /> },
     ],
     img: "https://greenwoodaca.com/wp-content/uploads/2025/06/P1095923-scaled.jpg",
     description:
-      "Primary years build foundational skills in literacy, numeracy, and critical thinking through engaging activities.",
+      "Focus on building strong academic basics in English, Maths, Science and Social Science, along with creativity and communication skills.",
   },
   {
     label: "Middle School",
     stats: [
-      { value: "18:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
-      { value: "11-14", label: "Age Range", icon: <FaChild /> },
+      { value: "45:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
+      { value: "VI - VIII", label: "Class", icon: <FaChild /> },
       { value: "98%", label: "Pass Percentage", icon: <FaGraduationCap /> },
     ],
     img: "https://greenwoodaca.com/wp-content/uploads/2025/03/GA-Activities8-2.jpeg",
     description:
-      "Our Middle School curriculum challenges students with specialized subjects while supporting their social-emotional growth.",
+      "Encourages analytical thinking and independence through hands-on learning, projects and active participation in schoolm activities.",
   },
   {
     label: "Secondary School",
     stats: [
-      { value: "15:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
-      { value: "14-16", label: "Age Range", icon: <FaChild /> },
+      { value: "45:1", label: "Student/Teacher Ratio", icon: <FaUserTie /> },
+      { value: "IX - X", label: "Class", icon: <FaChild /> },
       { value: "98%", label: "Pass Percentage", icon: <FaGraduationCap /> },
     ],
     img: gwImage,
     description:
-      "Secondary education prepares students for higher education with advanced coursework and college counseling.",
+      "Prepares students for academic excellence and future goals with elective options lile IIT-JEE/NEET, Music Theory, Arts & phonetics, or Music Theory, Phonetics & Coding.",
   },
 ];
 

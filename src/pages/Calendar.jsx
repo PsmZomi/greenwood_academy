@@ -12,18 +12,27 @@ const holidays = {
 
 // Academic events data for the entire year
 const academicEvents = [
-  { date: "2025-01-26", title: "Republic Day", type: "holiday" },
-  { date: "2025-03-15", title: "Annual Sports Day", type: "event" },
-  { date: "2025-04-01", title: "New Academic Year Begins", type: "academic" },
-  { date: "2025-05-15", title: "Summer Vacation Starts", type: "holiday" },
-  { date: "2025-06-15", title: "School Reopens", type: "academic" },
+  { date: "2025-02-12", title: "Teacher's Training & Orientztion", type: "academic" },
+  { date: "2025-02-14", title: "Staff Get Together", type: "event" },
+  { date: "2025-02-17", title: "Regular Class Commence", type: "academic" },
+  { date: "2025-03-21", title: "Inaugration of Board of Prefects", type: "events" },
+  { date: "2025-04-18", title: "Good Friday", type: "holiday" },
+  { date: "2025-05-15", title: "FA-I Result Declaration", type: "event" },
+  { date: "2025-05-16", title: "Hmar Martyr's Day", type: "holiday" },
+  { date: "2025-06-30", title: "Summer Vacation Starts", type: "holiday" },
+  { date: "2025-08-04", title: "Class Resume", type: "academic" },
   { date: "2025-08-15", title: "Independence Day", type: "holiday" },
-  { date: "2025-09-05", title: "Teachers' Day Celebration", type: "event" },
+  { date: "2025-09-12", title: "SA-I Exam Result Declaration", type: "academic" },
+  { date: "2025-09-13", title: "Black Day", type: "holiday" },
   { date: "2025-10-02", title: "Gandhi Jayanti", type: "holiday" },
-  { date: "2025-11-14", title: "Children's Day", type: "event" },
-  { date: "2025-12-15", title: "Annual Function", type: "event" },
-  { date: "2025-12-20", title: "Winter Vacation Starts", type: "holiday" },
-  { date: "2025-12-25", title: "Christmas", type: "holiday" },
+  { date: "2025-10-06", title: "Annual Sports", type: "holiday" },
+  { date: "2025-11-01", title: "Kut", type: "holiday" },
+  { date: "2025-12-10", title: "FA-II Exam Result Declaration", type: "academic" },
+  { date: "2025-12-20", title: "Winter Break", type: "holiday" },
+  { date: "2026-01-05", title: "Class Resume", type: "academic" },
+  { date: "2026-03-06", title: "SA-II Exam Result Declaration", type: "academic" },
+  { date: "2026-03-09", title: "New Admission Begins", type: "academic" },
+
 ];
 
 export default function CalendarPage() {

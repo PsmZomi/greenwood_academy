@@ -4,14 +4,14 @@ import principal from "../images/gw2.jpg";
 
 export default function Alumni() {
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <div className="min-h-screen bg-gray-50 pt-32">
       {/* Hero Section with Principal Image Background */}
 <div 
   className="relative bg-cover bg-center bg-no-repeat h-[40vh]" 
   style={{ backgroundImage: `url(${principal})` }}
 >
   {/* Dark overlay */}
-  <div className="absolute inset-0 bg-black opacity-50"></div>
+  <div className="absolute inset-0 bg-black/10 opacity-50"></div>
 
   {/* Content at bottom */}
   <div className="relative max-w-7xl mx-auto px-6 h-full flex flex-col justify-end text-center">

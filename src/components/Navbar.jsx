@@ -70,14 +70,16 @@ export default function Navbar() {
     return "Profile";
   };
 
+  // Community links
+  const communityLinks = ["team", "students-council", "alumni", "events"];
+  const academicsLinks = ["curriculum", "exam", "activities", "rules", "calendar", "certificate"];
+
   return (
     <nav className="fixed top-0 w-full z-50">
       {/* Main Navbar */}
       <div
         ref={mainNavRef}
-        className={`w-full bg-white shadow-sm transition-all duration-300 ${
-          scrolled ? "py-2" : "py-3"
-        }`}
+        className={`w-full bg-white shadow-sm transition-all duration-300 ${scrolled ? "py-2" : "py-3"}`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
@@ -92,9 +94,7 @@ export default function Navbar() {
             <img
               src={logo}
               alt="School Logo"
-              className={`transition-all duration-300 ${
-                scrolled ? "h-8 w-12" : "h-12 w-16"
-              }`}
+              className={`transition-all duration-300 ${scrolled ? "h-8 w-12" : "h-16 w-24"}`}
             />
             <span
               className={`text-[#00796E] font-extrabold tracking-wide transition-all duration-300 ${
@@ -107,9 +107,7 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex gap-6 text-md relative items-center">
-            <NavLink to="/about" className={({ isActive }) => linkClass(isActive)}>
-              About
-            </NavLink>
+            <NavLink to="/about" className={({ isActive }) => linkClass(isActive)}>About</NavLink>
 
             {/* Academics Dropdown */}
             <div
@@ -119,13 +117,7 @@ export default function Navbar() {
             >
               <button
                 className={`flex items-center gap-1 transition ${
-                  isActiveDropdown([
-                    "/academics/curriculum",
-                    "/academics/achievements",
-                    "/academics/facilities",
-                    "/academics/rules",
-                    "/academics/calendar",
-                  ])
+                  isActiveDropdown(academicsLinks.map(link => `/academics/${link}`))
                     ? "text-[#00796E] font-semibold"
                     : "text-black hover:text-[#00796E]"
                 }`}
@@ -134,26 +126,16 @@ export default function Navbar() {
               </button>
               <div
                 className={`absolute top-full left-0 w-48 bg-white shadow-lg rounded-md transform transition-all duration-300 ease-in-out z-50 ${
-                  academicsOpen
-                    ? "opacity-100 translate-y-0 visible"
-                    : "opacity-0 -translate-y-2 invisible"
+                  academicsOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-2 invisible"
                 }`}
               >
-                {[
-                  "curriculum",
-                  "achievements",
-                  "facilities",
-                  "rules",
-                  "calendar",
-                ].map((item) => (
+                {academicsLinks.map((item) => (
                   <NavLink
                     key={item}
                     to={`/academics/${item}`}
                     className={({ isActive }) =>
                       `block px-4 py-2 text-sm hover:bg-green-50 transition ${
-                        isActive
-                          ? "text-[#00796E] font-medium"
-                          : "text-gray-700"
+                        isActive ? "text-[#00796E] font-medium" : "text-gray-700"
                       }`
                     }
                   >
@@ -171,12 +153,7 @@ export default function Navbar() {
             >
               <button
                 className={`flex items-center gap-1 transition ${
-                  isActiveDropdown([
-                    "/community/team",
-                    "/community/events",
-                    "/community/alumni",
-                    "/community/governance",
-                  ])
+                  isActiveDropdown(communityLinks.map(link => `/community/${link}`))
                     ? "text-[#00796E] font-semibold"
                     : "text-black hover:text-[#00796E]"
                 }`}
@@ -185,51 +162,40 @@ export default function Navbar() {
               </button>
               <div
                 className={`absolute top-full left-0 w-56 bg-white shadow-lg rounded-md transform transition-all duration-300 ease-in-out z-50 ${
-                  communityOpen
-                    ? "opacity-100 translate-y-0 visible"
-                    : "opacity-0 -translate-y-2 invisible"
+                  communityOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-2 invisible"
                 }`}
               >
-                {["team", "events", "alumni", "governance"].map((item) => (
+                {communityLinks.map((item) => (
                   <NavLink
                     key={item}
                     to={`/community/${item}`}
                     className={({ isActive }) =>
                       `block px-4 py-2 text-sm hover:bg-green-50 transition ${
-                        isActive
-                          ? "text-[#00796E] font-medium"
-                          : "text-gray-700"
+                        isActive ? "text-[#00796E] font-medium" : "text-gray-700"
                       }`
                     }
                   >
-                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                    {item
+                      .split("-")
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ")}
                   </NavLink>
                 ))}
               </div>
             </div>
 
-            <NavLink to="/admission" className={({ isActive }) => linkClass(isActive)}>
-              Admission
-            </NavLink>
-            <NavLink to="/gallery" className={({ isActive }) => linkClass(isActive)}>
-              Gallery
-            </NavLink>
-            <NavLink to="/contact" className={({ isActive }) => linkClass(isActive)}>
-              Contact
-            </NavLink>
+            <NavLink to="/admission" className={({ isActive }) => linkClass(isActive)}>Admission</NavLink>
+            <NavLink to="/gallery" className={({ isActive }) => linkClass(isActive)}>Gallery</NavLink>
+            <NavLink to="/contact" className={({ isActive }) => linkClass(isActive)}>Contact</NavLink>
 
-            {/* Profile/Login beside Contact */}
+            {/* Profile/Login */}
             <button
               onClick={handleProfileClick}
               className="flex items-center gap-1 ml-2 text-black hover:text-[#00796E] transition"
             >
               <div className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center bg-white border border-gray-300">
                 {currentUser?.photoURL ? (
-                  <img
-                    src={currentUser.photoURL}
-                    alt="profile"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={currentUser.photoURL} alt="profile" className="w-full h-full object-cover" />
                 ) : (
                   <FiUser className="w-4 h-4 text-[#00796E]" />
                 )}
@@ -265,13 +231,11 @@ export default function Navbar() {
                   onClick={() => setAcademicsOpen(!academicsOpen)}
                 >
                   <span>Academics</span>
-                  <span className={`transform transition-transform ${academicsOpen ? "rotate-180" : ""}`}>
-                    ▼
-                  </span>
+                  <span className={`transform transition-transform ${academicsOpen ? "rotate-180" : ""}`}>▼</span>
                 </button>
                 {academicsOpen && (
                   <div className="bg-gray-50 flex flex-col">
-                    {["curriculum", "achievements", "facilities", "rules", "calendar"].map((item) => (
+                    {academicsLinks.map(item => (
                       <NavLink
                         key={item}
                         to={`/academics/${item}`}
@@ -292,49 +256,32 @@ export default function Navbar() {
                   onClick={() => setCommunityOpen(!communityOpen)}
                 >
                   <span>Our Community</span>
-                  <span className={`transform transition-transform ${communityOpen ? "rotate-180" : ""}`}>
-                    ▼
-                  </span>
+                  <span className={`transform transition-transform ${communityOpen ? "rotate-180" : ""}`}>▼</span>
                 </button>
                 {communityOpen && (
                   <div className="bg-gray-50 flex flex-col">
-                    {["team", "events", "alumni", "governance"].map((item) => (
+                    {communityLinks.map(item => (
                       <NavLink
                         key={item}
                         to={`/community/${item}`}
                         className="px-10 py-2 hover:bg-gray-100 transition"
                         onClick={() => setOpen(false)}
                       >
-                        {item.charAt(0).toUpperCase() + item.slice(1)}
+                        {item
+                          .split("-")
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(" ")}
                       </NavLink>
                     ))}
                   </div>
                 )}
               </div>
 
-              <NavLink
-                to="/admission"
-                className="px-6 py-3 hover:bg-gray-50 transition border-t"
-                onClick={() => setOpen(false)}
-              >
-                Admission
-              </NavLink>
-              <NavLink
-                to="/gallery"
-                className="px-6 py-3 hover:bg-gray-50 transition border-t"
-                onClick={() => setOpen(false)}
-              >
-                Gallery
-              </NavLink>
-              <NavLink
-                to="/contact"
-                className="px-6 py-3 hover:bg-gray-50 transition border-t"
-                onClick={() => setOpen(false)}
-              >
-                Contact
-              </NavLink>
+              <NavLink to="/admission" className="px-6 py-3 hover:bg-gray-50 transition border-t" onClick={() => setOpen(false)}>Admission</NavLink>
+              <NavLink to="/gallery" className="px-6 py-3 hover:bg-gray-50 transition border-t" onClick={() => setOpen(false)}>Gallery</NavLink>
+              <NavLink to="/contact" className="px-6 py-3 hover:bg-gray-50 transition border-t" onClick={() => setOpen(false)}>Contact</NavLink>
 
-              {/* Profile in mobile menu */}
+              {/* Profile Mobile */}
               <button
                 onClick={handleProfileClick}
                 className="px-6 py-3 hover:bg-gray-50 transition border-t flex items-center gap-2"
@@ -351,34 +298,26 @@ export default function Navbar() {
       {(isAcademicsPage || isCommunityPage) && (
         <div ref={secondaryNavRef} className="w-full bg-[#00796E] overflow-x-auto">
           <div className="max-w-7xl mx-auto flex justify-start md:justify-center">
-            {(isAcademicsPage
-              ? ["curriculum", "achievements", "facilities", "rules", "calendar"]
-              : ["team", "events", "alumni", "governance"]
-            ).map((item, index, array) => (
+            {(isAcademicsPage ? academicsLinks : communityLinks).map((item, index, array) => (
               <div key={item} className="flex items-center">
                 <NavLink
                   to={`/${isAcademicsPage ? "academics" : "community"}/${item}`}
                   className={({ isActive }) =>
                     `px-4 py-3 text-sm font-medium transition-colors relative ${
-                      isActive
-                        ? "text-white font-semibold"
-                        : "text-white hover:text-green-200"
+                      isActive ? "text-white font-semibold" : "text-white hover:text-green-200"
                     }`
                   }
                 >
-                  {item.charAt(0).toUpperCase() + item.slice(1).replace("-", " ")}
+                  {item.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
                   <div
                     className={`absolute bottom-3 left-4 right-4 h-0.5 bg-white transition-all duration-200 ${
-                      location.pathname ===
-                      `/${isAcademicsPage ? "academics" : "community"}/${item}`
+                      location.pathname === `/${isAcademicsPage ? "academics" : "community"}/${item}`
                         ? "opacity-100"
                         : "opacity-0"
                     }`}
                   />
                 </NavLink>
-                {index < array.length - 1 && (
-                  <div className="h-6 w-px bg-white/30"></div>
-                )}
+                {index < array.length - 1 && <div className="h-6 w-px bg-white/30"></div>}
               </div>
             ))}
           </div>
