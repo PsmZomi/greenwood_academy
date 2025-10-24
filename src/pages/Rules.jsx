@@ -6,7 +6,7 @@ export default function RulesRegulationsPage() {
       {/* The pt ensures the heading is not hidden behind sticky navbars */}
      
       <div className="w-full flex items-center justify-center mt-2">
-        <h1 className="text-gray-900 text-4xl md:text-6xl font-bold pt-[80px]">
+        <h1 className=" text-4xl md:text-6xl text-[#00796E] font-bold pt-[100px] underline">
           Rules & Regulations
         </h1>
       </div>

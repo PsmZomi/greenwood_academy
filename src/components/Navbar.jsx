@@ -91,11 +91,14 @@ export default function Navbar() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
-            <img
-              src={logo}
-              alt="School Logo"
-              className={`transition-all duration-300 ${scrolled ? "h-8 w-12" : "h-16 w-24"}`}
-            />
+           <img
+  src={logo}
+  alt="School Logo"
+  className={`rounded-full object-contain transition-all duration-300 ${
+    scrolled ? "h-12 w-12" : "h-20 w-20"
+  }`}
+/>
+
             <span
               className={`text-[#00796E] font-extrabold tracking-wide transition-all duration-300 ${
                 scrolled ? "text-lg" : "text-2xl"

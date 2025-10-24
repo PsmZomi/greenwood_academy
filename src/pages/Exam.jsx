@@ -35,7 +35,7 @@ export default function ExaminationStructure() {
   return (
     <section className="bg-green-50 min-h-screen pt-[140px] px-6 md:px-12">
       <div className="max-w-6xl mx-auto text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-[#00796E] mb-6 underline">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-[#00796E] mb-6 underline pt-8">
           Examination Structure
         </h1>
       </div>

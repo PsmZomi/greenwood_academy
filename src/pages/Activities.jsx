@@ -39,7 +39,7 @@ export default function CoCurricularActivities() {
         <section className="bg-gray-50 min-h-screen pt-[150px] pb-16 px-4 md:px-10">
             {/* Heading */}
             <div className="max-w-7xl mx-auto text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-[#00796E] mb-4 relative inline-block">
+                <h1 className="text-4xl md:text-5xl font-extrabold text-[#00796E] mb-4 relative inline-block underline pt-6">
                     Co-Curricular Activities
                     <span className="absolute left-1/2 bottom-0 w-16 h-1 bg-[#00796E] transform -translate-x-1/2 rounded-full"></span>
                 </h1>

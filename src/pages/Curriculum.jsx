@@ -111,7 +111,7 @@ export default function Academics() {
       style={{ paddingTop: `calc(var(--navbar-height, ${navbarHeight}px) + 2rem)` }}
     >
       {/* Heading */}
-      <div className="max-w-6xl mx-auto text-center mb-12 mt-2">
+      <div className="max-w-6xl mx-auto text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-extrabold text-[#00796E] mb-4 underline text-wide">
           CURRICULUM
         </h1>

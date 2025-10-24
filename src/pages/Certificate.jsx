@@ -63,7 +63,7 @@ export default function CertificateDownloadPage() {
     return (
         <section className="bg-gray-50 min-h-screen pt-[150px] pb-20 px-4 md:px-10">
             {/* Header Section */}
-            <div className="max-w-7xl mx-auto text-center mb-16">
+            <div className="max-w-7xl mx-auto text-center mb-16 pt-6">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#00796E] mb-4 relative inline-block">
                     Certificate Center
                     <span className="absolute left-1/2 bottom-0 w-16 h-1 bg-[#00796E] transform -translate-x-1/2 rounded-full"></span>

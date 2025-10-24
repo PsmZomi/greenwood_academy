@@ -116,7 +116,7 @@ export default function CalendarPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 pt-[50px]">
-      <h1 className="text-3xl font-bold text-[#00796E] pt-[100px] text-center">
+      <h1 className="text-3xl font-bold text-[#00796E] pt-[120px] underline text-center">
         School Academic Calendar
       </h1>
 

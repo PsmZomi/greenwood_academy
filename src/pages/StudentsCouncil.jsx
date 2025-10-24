@@ -29,7 +29,7 @@ export default function StudentsCouncil() {
 
   return (
     // Max width set to 7xl, mt-32 for nav bar clearance
-    <div className="p-4 space-y-8 max-w-7xl mx-auto mt-32"> 
+    <div className="p-4 space-y-8 max-w-7xl mx-auto mt-36"> 
       {/* Main Heading */}
       <h1 className="text-4xl font-extrabold text-[#00796E] mb-8 text-center underline decoration-[#00796E]">
         School Leadership Structure
