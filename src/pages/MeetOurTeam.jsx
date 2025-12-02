@@ -10,7 +10,7 @@ function TeacherCard({ teacher }) {
           <img
             src={teacher.img}
             alt={teacher.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
             loading="lazy"
           />
           <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/70 to-transparent text-white py-2 px-2">
@@ -63,7 +63,7 @@ export default function MeetOurTeam() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center relative z-10 underline">
-          Meet Our <span className="text-[#00796E]">Team</span>
+          Meet Our <span className="text-[#00796E]">Staffs</span>
         </h2>
 
         {/* First row: Top 4 teachers */}

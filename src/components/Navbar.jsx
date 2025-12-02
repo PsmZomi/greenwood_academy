@@ -71,7 +71,7 @@ export default function Navbar() {
   };
 
   // Community links
-  const communityLinks = ["team", "students-council", "alumni", "events"];
+  const communityLinks = ["staffs", "students-council", "alumni", "events"];
   const academicsLinks = ["curriculum", "exam", "activities", "rules", "calendar", "certificate"];
 
   return (

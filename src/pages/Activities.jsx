@@ -44,7 +44,7 @@ export default function CoCurricularActivities() {
                     <span className="absolute left-1/2 bottom-0 w-16 h-1 bg-[#00796E] transform -translate-x-1/2 rounded-full"></span>
                 </h1>
                 <p className="text-gray-600 text-lg leading-relaxed max-w-4xl mx-auto mt-6">
-                    At Greenwood Academy, education extends beyond the classroom. Our comprehensive program encourages creativity, teamwork, and leadership, giving every student the chance to explore and excel in their passions.
+                    At Greenwood Academy, education goes beyond the classroom. We believe in nurturing every child's talents diverse Post Class Activities (PCA) and school-wide programs that promote creativity, confidence, teamwork and leadership
                 </p>
             </div>
 
@@ -77,11 +77,11 @@ export default function CoCurricularActivities() {
 {/* House System */}
 <div className="max-w-7xl mx-auto mb-10 text-center">
   <h2 className="text-4xl font-bold text-[#00796E] mb-6 relative inline-block">
-    Our House System
-    <span className="absolute left-1/2 bottom-0 w-10 h-1 bg-[#00796E] transform -translate-x-1/2 rounded-full"></span>
+    House System
+    <span className="absolute left-1/2 bottom-0 w-20 h-1 bg-[#00796E] transform -translate-x-1/2 rounded-full"></span>
   </h2>
   <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-    A vibrant system fostering competitive spirit, leadership, and teamwork among students.
+    Students are grouped under four houses - Red Hawks, Green Sentinels, Yellow Gryphons and Blue Phoenix - fosterning a spirit of healthy competition through various inter-house events and challenges
   </p>
 
   <div className="flex flex-wrap justify-center gap-1">

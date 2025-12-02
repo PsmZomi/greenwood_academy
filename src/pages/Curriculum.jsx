@@ -48,14 +48,14 @@ const curriculum = [
       "Social Science",
       "Mathematics",
       "ITC",
+      "Know your Aptitude",
       "Value Education",
       "Hindi",
-      "Know your Aptitude",
     ],
-    electiveOptions: [
-      "IIT-JEE / NEET Preparation",
-      "Music Theory, Arts & Phonetics",
-    ],
+    // electiveOptions: [
+    //   "IIT-JEE / NEET Preparation",
+    //   "Music Theory, Arts & Phonetics",
+    // ],
   },
   {
     stage: "Secondary (Classes IX – X)",
@@ -74,10 +74,10 @@ const curriculum = [
       "MIL",
       "Home Science",
     ],
-    electiveOptions: [
-      "IIT-JEE / NEET Preparation",
-      "Music Theory, Arts & Phonetics",
-    ],
+    // electiveOptions: [
+    //   "IIT-JEE / NEET Preparation",
+    //   "Music Theory, Arts & Phonetics",
+    // ],
   },
 ];
 
@@ -157,7 +157,7 @@ export default function Academics() {
             {section.coreSubjects && (
               <div className="mb-4">
                 <h3 className="text-[#00796E] font-semibold mb-2 border-l-4 border-[#00796E] pl-2 text-left">
-                  Core Subjects
+                  Subjects Offered
                 </h3>
                 <ul className="list-disc list-inside text-gray-800 text-sm space-y-1">
                   {section.coreSubjects.map((subject, i) => (

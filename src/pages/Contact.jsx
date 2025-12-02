@@ -16,7 +16,7 @@ const socialLinks = [
 
 export default function ContactPage() {
   return (
-    <section className="bg-gray-50 min-h-screen py-12 px-6 flex items-center justify-center pt-[100px]">
+    <section className="bg-gray-50 min-h-screen py-12 mt-8 px-6 flex items-center justify-center pt-[100px]">
       <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Contact Form */}
         <form className="bg-white rounded-2xl shadow-xl p-10 flex flex-col justify-between transition-transform hover:scale-[1.02] duration-300">
