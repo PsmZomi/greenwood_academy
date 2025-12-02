@@ -150,7 +150,7 @@ export default function AboutPage() {
     { name: "Mr. Richard L. Haokip", title: "Principal", image: principal },
     { name: "Mr. Daniel Kipgen", title: "Vice Principal", image: vicePrincipal },
     { name: "Mrs. Chinneithiem Haokip", title: "Academic Dean", image: academicDean },
-    { name: "Mrs. Lamneikim Ngaihte", title: "HOD (Pre to Middle Section)", image: hod },
+    { name: "Mrs. Lamneikim Ngaihte", title: "HOD (Pre-Primary to Middle Section)", image: hod },
   ].map((person, index) => (
     <div
       key={index}
@@ -198,16 +198,13 @@ export default function AboutPage() {
                       </tr>
                       <tr className="border-b border-gray-200 hover:bg-gray-50">
                         <td className="py-4 px-6 font-semibold text-gray-900 text-lg">Mr. Daniel Kipgen</td>
-                        <td className="py-4 px-6 text-gray-700 text-lg">Vice Principal (Chairman)</td>
+                        <td className="py-4 px-6 text-gray-700 text-lg">Vice - Principal (Chairman)</td>
                       </tr>
                       <tr className="border-b border-gray-200 hover:bg-gray-50">
                         <td className="py-4 px-6 font-semibold text-gray-900 text-lg">Mrs. Chinneithiem Haokip</td>
-                        <td className="py-4 px-6 text-gray-700 text-lg">Academic Dean (Secretary)</td>
+                        <td className="py-4 px-6 text-gray-700 text-lg">Supervisor (Secretary)</td>
                       </tr>
-                      <tr className="hover:bg-gray-50">
-                        <td className="py-4 px-6 font-semibold text-gray-900 text-lg">Mrs. Lamneikim Ngaihte</td>
-                        <td className="py-4 px-6 text-gray-700 text-lg">HOD (Member)</td>
-                      </tr>
+                   
                     </tbody>
                   </table>
                 </div>
@@ -233,7 +230,7 @@ export default function AboutPage() {
                       </tr>
                       <tr className="border-b border-gray-200 hover:bg-gray-50">
                         <td className="py-4 px-6 font-semibold text-gray-900 text-lg">Mr. Daniel Kipgen</td>
-                        <td className="py-4 px-6 text-gray-700 text-lg">Vice Principal (Secretary)</td>
+                        <td className="py-4 px-6 text-gray-700 text-lg">Vice - Principal (Secretary)</td>
                       </tr>
                       <tr className="border-b border-gray-200 hover:bg-gray-50">
                         <td className="py-4 px-6 font-semibold text-gray-900 text-lg">Mr. Biaksang Gangte</td>

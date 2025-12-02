@@ -32,13 +32,14 @@ import AdminGalleryUpload from "./pages/AdminGalleryUpload";
 import AdminDashboard from "./components/AdminDashboard";
 import NewsDetail from "./pages/NewsDetail";
 import Certificate from "./pages/Certificate";
+import ScrollToTop from "./utils/ScrollToTop";
 
 export default function App() {
   return (
     <ProfileProvider>
       <Router>
         <Navbar />
-
+        <ScrollToTop/>
         <main className="relative z-10">
           <Routes>
             {/* Home */}
@@ -78,7 +79,7 @@ export default function App() {
             <Route path="/academics/certificate" element={<Certificate />} />
 
             {/* Community */}
-            <Route path="/community/team" element={<MeetOurTeam />} />
+            <Route path="/community/staffs" element={<MeetOurTeam />} />
             <Route path="/community/events" element={<Events />} />
             <Route path="/community/alumni" element={<Alumni />} />
             <Route path="/community/students-council" element={<StudentsCouncil />} />
